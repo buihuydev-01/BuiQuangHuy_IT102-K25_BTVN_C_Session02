@@ -85,10 +85,7 @@
                                 Foreground="White"
                                 BorderThickness="0"
                                 Cursor="Hand">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="🔄" FontSize="16" Margin="0,0,5,0"/>
-                                <TextBlock Text="Làm mới" FontWeight="Bold"/>
-                            </StackPanel>
+                            <TextBlock Text="Làm mới" FontWeight="Bold"/>
                         </Button>
 
                         <Button Command="{Binding StartAutoRefreshCommand}" 
@@ -98,10 +95,7 @@
                                 Foreground="White"
                                 BorderThickness="0"
                                 Cursor="Hand">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="▶" FontSize="16" Margin="0,0,5,0"/>
-                                <TextBlock Text="Tự động" FontWeight="Bold"/>
-                            </StackPanel>
+                            <TextBlock Text="Tự động" FontWeight="Bold"/>
                         </Button>
 
                         <Button Command="{Binding StopAutoRefreshCommand}" 
@@ -110,10 +104,7 @@
                                 Foreground="White"
                                 BorderThickness="0"
                                 Cursor="Hand">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="⏸" FontSize="16" Margin="0,0,5,0"/>
-                                <TextBlock Text="Dừng" FontWeight="Bold"/>
-                            </StackPanel>
+                            <TextBlock Text="Dừng" FontWeight="Bold"/>
                         </Button>
                     </StackPanel>
 
@@ -145,7 +136,7 @@
                     </Grid.ColumnDefinitions>
                     
                     <TextBlock Grid.Column="0" 
-                               Text="🍪 Cookie/Session:" 
+                               Text="Cookie/Session:" 
                                Foreground="White"
                                VerticalAlignment="Center"
                                Margin="0,0,10,0"
@@ -168,7 +159,7 @@
                         <Hyperlink Foreground="#3498DB" 
                                    NavigateUri="about:blank"
                                    RequestNavigate="Hyperlink_RequestNavigate">
-                            <TextBlock Text="❓ Hướng dẫn" FontWeight="Bold"/>
+                            <TextBlock Text="Hướng dẫn" FontWeight="Bold"/>
                         </Hyperlink>
                     </TextBlock>
                 </Grid>
@@ -203,22 +194,33 @@
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
 
-                <!-- Trận đấu -->
-                <DataGridTemplateColumn Header="Trận đấu" Width="250">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <TextBlock Text="{Binding HomeTeam}" 
-                                           Foreground="#2C3E50"
-                                           FontWeight="Bold"
-                                           Margin="5,2"/>
-                                <TextBlock Text="{Binding AwayTeam}" 
-                                           Foreground="#7F8C8D"
-                                           Margin="5,2"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                <!-- Trận đấu (1 dòng: Team1 - Team2) -->
+                <DataGridTextColumn Header="Trận đấu" 
+                                    Binding="{Binding MatchDisplay}" 
+                                    Width="220">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Left"/>
+                            <Setter Property="Padding" Value="5,0"/>
+                            <Setter Property="Foreground" Value="#2C3E50"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <!-- Tỷ số -->
+                <DataGridTextColumn Header="Tỷ số" 
+                                    Binding="{Binding ScoreDisplay}" 
+                                    Width="80">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Center"/>
+                            <Setter Property="Foreground" Value="#E74C3C"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="FontSize" Value="16"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
 
                 <!-- Chấp FT (Full Time) -->
                 <DataGridTemplateColumn Header="Chấp FT" Width="100">

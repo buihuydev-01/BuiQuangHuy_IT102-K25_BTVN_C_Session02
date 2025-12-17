@@ -29,6 +29,8 @@ namespace SportsOddsApp.Services
             public string AwayTeam { get; set; }
             public DateTime MatchTime { get; set; }
             public int Status { get; set; }
+            public int HomeScore { get; set; }
+            public int AwayScore { get; set; }
         }
 
         public class RawOdds
@@ -115,8 +117,8 @@ namespace SportsOddsApp.Services
 
             try
             {
-                // Pattern: [matchId,type,leagueId,'homeTeam','awayTeam','code',mode,'datetime',...]
-                var matchPattern = @"\[(\d+),\d+,(\d+),'([^']*?)','([^']*?)','[^']*',\d+,'(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})',\d+";
+                // Pattern: [matchId,type,leagueId,'homeTeam','awayTeam','code',mode,'datetime',status,...]
+                var matchPattern = @"\[(\d+),\d+,(\d+),'([^']*?)','([^']*?)','[^']*',\d+,'(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})',(\d+)";
                 var matchResults = Regex.Matches(data, matchPattern);
 
                 foreach (RegexMatch match in matchResults)
@@ -129,7 +131,9 @@ namespace SportsOddsApp.Services
                             LeagueId = int.Parse(match.Groups[2].Value),
                             HomeTeam = CleanText(match.Groups[3].Value),
                             AwayTeam = CleanText(match.Groups[4].Value),
-                            Status = 0
+                            Status = 0,
+                            HomeScore = 0,
+                            AwayScore = 0
                         };
 
                         // Parse datetime: "12/17/2025 15:15"
@@ -140,6 +144,13 @@ namespace SportsOddsApp.Services
                             out DateTime matchTime))
                         {
                             rawMatch.MatchTime = matchTime;
+                        }
+
+                        // Parse status
+                        if (match.Groups[6].Success)
+                        {
+                            int.TryParse(match.Groups[6].Value, out int status);
+                            rawMatch.Status = status;
                         }
 
                         // Only add if teams are valid
@@ -288,7 +299,10 @@ namespace SportsOddsApp.Services
                     AwayTeam = rawMatch.AwayTeam,
                     MatchTime = rawMatch.MatchTime,
                     Time = rawMatch.MatchTime.ToString("HH:mm"),
-                    Status = rawMatch.Status
+                    Status = rawMatch.Status,
+                    Score = (rawMatch.HomeScore > 0 || rawMatch.AwayScore > 0) 
+                        ? $"{rawMatch.HomeScore} - {rawMatch.AwayScore}" 
+                        : ""
                 };
 
                 matches.Add(match);

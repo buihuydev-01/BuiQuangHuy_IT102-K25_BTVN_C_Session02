@@ -47,6 +47,18 @@ namespace SportsOddsApp.Models
             set { _score = value; OnPropertyChanged(nameof(Score)); }
         }
 
+        // Display format: "Team1 - Team2"
+        public string MatchDisplay
+        {
+            get => $"{HomeTeam} - {AwayTeam}";
+        }
+
+        // Score display: "0 - 0" or "-"
+        public string ScoreDisplay
+        {
+            get => string.IsNullOrEmpty(Score) ? "-" : Score;
+        }
+
         // Handicap Full Time (Cược chấp Cả trận)
         public string HdpHome
         {
@@ -187,7 +199,7 @@ namespace SportsOddsApp.Models
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

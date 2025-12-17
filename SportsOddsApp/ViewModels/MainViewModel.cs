@@ -117,9 +117,9 @@ namespace SportsOddsApp.ViewModels
                 IsLoading = true;
                 StatusMessage = "Đang tải dữ liệu...";
 
-                var matches = await _apiService.GetTodayMatchesAsync();
+                List<Models.Match> matches = await _apiService.GetTodayMatchesAsync();
 
-                // Update on UI thread
+                // Update on UI thread - KHÔNG RESET dữ liệu
                 System.Windows.Application.Current?.Dispatcher.Invoke(() =>
                 {
                     // Update existing matches or add new ones
@@ -128,24 +128,17 @@ namespace SportsOddsApp.ViewModels
                         var existingMatch = Matches.FirstOrDefault(m => m.MatchId == match.MatchId);
                         if (existingMatch != null)
                         {
-                            // Update existing match
+                            // Update existing match (không thêm dòng mới)
                             UpdateMatch(existingMatch, match);
                         }
                         else
                         {
-                            // Add new match
+                            // Add new match only if not exists
                             Matches.Add(match);
                         }
                     }
 
-                    // Remove matches that are no longer in the data
-                    var matchIds = matches.Select(m => m.MatchId).ToHashSet();
-                    var toRemove = Matches.Where(m => !matchIds.Contains(m.MatchId)).ToList();
-                    foreach (var match in toRemove)
-                    {
-                        Matches.Remove(match);
-                    }
-
+                    // KHÔNG XÓA matches cũ - giữ lại để theo dõi
                     // Sort by time
                     var sorted = Matches.OrderBy(m => m.MatchTime).ToList();
                     Matches.Clear();
@@ -169,12 +162,12 @@ namespace SportsOddsApp.ViewModels
             }
         }
 
-        private void UpdateMatch(Match existing, Match updated)
+        private void UpdateMatch(Models.Match existing, Models.Match updated)
         {
             existing.Time = updated.Time;
             existing.HomeTeam = updated.HomeTeam;
             existing.AwayTeam = updated.AwayTeam;
-            existing.Score = updated.Score;
+            existing.Score = updated.Score;  // Cập nhật tỷ số
             existing.HdpHome = updated.HdpHome;
             existing.HdpAway = updated.HdpAway;
             existing.OuHome = updated.OuHome;
@@ -183,12 +176,27 @@ namespace SportsOddsApp.ViewModels
             existing.OddsX = updated.OddsX;
             existing.Odds2 = updated.Odds2;
             existing.Status = updated.Status;
+            
+            // Hiệp 1
+            existing.HdpH1Home = updated.HdpH1Home;
+            existing.HdpH1Away = updated.HdpH1Away;
+            existing.HdpH1Line = updated.HdpH1Line;
+            existing.OuH1Home = updated.OuH1Home;
+            existing.OuH1Away = updated.OuH1Away;
+            existing.OuH1Line = updated.OuH1Line;
+            existing.Odds1H1 = updated.Odds1H1;
+            existing.OddsXH1 = updated.OddsXH1;
+            existing.Odds2H1 = updated.Odds2H1;
+            
+            // Trigger property changed cho MatchDisplay và ScoreDisplay
+            existing.OnPropertyChanged(nameof(existing.MatchDisplay));
+            existing.OnPropertyChanged(nameof(existing.ScoreDisplay));
         }
 
         private void StartAutoRefresh()
         {
             _refreshTimer.Start();
-            StatusMessage = "Đã bật tự động cập nhật (10 giây/lần)";
+            StatusMessage = "Đã bật tự động cập nhật (1 giây/lần)";
         }
 
         private void StopAutoRefresh()
