@@ -82,7 +82,7 @@ namespace SportsOddsApp.Services
             {
                 var parser = new JavaScriptDataParser();
                 var parsedData = parser.Parse(jsContent);
-                var matches = parser.ConvertToMatches(parsedData);
+                var matches = parser.ConvertToMatches(parsedData, jsContent);
                 return matches.OrderBy(m => m.MatchTime).ToList();
             }
             catch (Exception ex)

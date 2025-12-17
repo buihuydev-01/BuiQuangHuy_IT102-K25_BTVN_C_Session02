@@ -19,6 +19,7 @@ namespace SportsOddsApp.Services
             public Dictionary<int, string> Leagues { get; set; } = new();
             public List<RawMatch> Matches { get; set; } = new();
             public List<RawOdds> Odds { get; set; } = new();
+            public Dictionary<int, int> MatchLiveIdToMatchId { get; set; } = new(); // Mapping matchLiveId → matchId
         }
 
         public class RawMatch
@@ -67,6 +68,9 @@ namespace SportsOddsApp.Services
 
                 // Parse matches
                 result.Matches = ParseMatches(data);
+
+                // Parse match mapping (matchLiveId → matchId)
+                result.MatchLiveIdToMatchId = ParseMatchMapping(data);
 
                 // Parse odds
                 result.Odds = ParseOdds(data);
@@ -172,6 +176,42 @@ namespace SportsOddsApp.Services
             }
 
             return matches;
+        }
+
+        private Dictionary<int, int> ParseMatchMapping(string data)
+        {
+            var mapping = new Dictionary<int, int>();
+
+            try
+            {
+                // Pattern: [matchLiveId,matchId,x,x,x,x]
+                // Example: [[113397115,9183877,0,0,0,19],...]
+                var mappingPattern = @"\[(\d+),(\d+),\d+,\d+,\d+,\d+\]";
+                var matches = Regex.Matches(data, mappingPattern);
+
+                foreach (RegexMatch match in matches)
+                {
+                    try
+                    {
+                        int matchLiveId = int.Parse(match.Groups[1].Value);
+                        int matchId = int.Parse(match.Groups[2].Value);
+                        
+                        if (!mapping.ContainsKey(matchLiveId))
+                        {
+                            mapping[matchLiveId] = matchId;
+                        }
+                    }
+                    catch { }
+                }
+
+                Console.WriteLine($"Parsed {mapping.Count} match mappings");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Mapping parse error: {ex.Message}");
+            }
+
+            return mapping;
         }
 
         private List<RawOdds> ParseOdds(string data)
@@ -281,7 +321,7 @@ namespace SportsOddsApp.Services
         /// <summary>
         /// Convert parsed data to Match objects
         /// </summary>
-        public List<Match> ConvertToMatches(ParsedData parsedData)
+        public List<Match> ConvertToMatches(ParsedData parsedData, string rawData = "")
         {
             var matches = new List<Match>();
 
@@ -309,38 +349,38 @@ namespace SportsOddsApp.Services
             }
 
             // Apply odds to matches
-            ApplyOddsToMatches(matches, parsedData.Odds);
+            ApplyOddsToMatches(matches, parsedData.Odds, parsedData.MatchLiveIdToMatchId, rawData);
 
             return matches;
         }
 
-        private void ApplyOddsToMatches(List<Match> matches, List<RawOdds> oddsList)
+        private void ApplyOddsToMatches(List<Match> matches, List<RawOdds> oddsList, Dictionary<int, int> liveIdToMatchId, string rawData)
         {
-            // Group odds by match
-            var oddsGroups = oddsList.GroupBy(o => o.MatchLiveId);
-
-            // Note: MatchLiveId might be different from MatchId
-            // We need to map them somehow, or use an intermediate mapping table
-            // For now, we'll try to match by order or other logic
-
-            // This is a simplified approach - in reality, you'd need proper mapping
-            var matchIdToLiveId = new Dictionary<int, int>();
+            // Reverse mapping: matchId → matchLiveId
+            var matchIdToLiveId = liveIdToMatchId.ToDictionary(x => x.Value, x => x.Key);
 
             foreach (var match in matches)
             {
-                // Try to find odds for this match
-                // This is where you'd implement proper ID mapping logic
-                var matchOdds = oddsList.Where(o => 
-                    // Simple heuristic: assume sequential or similar IDs
-                    Math.Abs(o.MatchLiveId - match.MatchId) < 1000
-                ).ToList();
+                // Find matchLiveId for this match
+                if (!matchIdToLiveId.TryGetValue(match.MatchId, out int matchLiveId))
+                {
+                    // Nếu không tìm thấy mapping, thử tìm gần đúng
+                    continue;
+                }
+
+                // Get all odds for this match
+                var matchOdds = oddsList.Where(o => o.MatchLiveId == matchLiveId).ToList();
 
                 if (matchOdds.Any())
                 {
                     // ========== FULL TIME (Cả trận) ==========
                     
-                    // Type 1 = Handicap Full Time
-                    var hdpOdds = matchOdds.FirstOrDefault(o => o.Type == 1);
+                    // Type 1 = Handicap Full Time (lấy odds chính - thường là mức 1500 hoặc 2000)
+                    var hdpOdds = matchOdds
+                        .Where(o => o.Type == 1)
+                        .OrderByDescending(o => Math.Abs(o.HomeOdds) + Math.Abs(o.AwayOdds))
+                        .FirstOrDefault();
+                    
                     if (hdpOdds != null)
                     {
                         match.HdpHome = FormatOdds(hdpOdds.HomeOdds);
@@ -348,26 +388,39 @@ namespace SportsOddsApp.Services
                     }
 
                     // Type 3 = Over/Under Full Time
-                    var ouOdds = matchOdds.FirstOrDefault(o => o.Type == 3);
+                    var ouOdds = matchOdds
+                        .Where(o => o.Type == 3)
+                        .OrderByDescending(o => Math.Abs(o.HomeOdds) + Math.Abs(o.AwayOdds))
+                        .FirstOrDefault();
+                    
                     if (ouOdds != null)
                     {
                         match.OuHome = FormatOdds(ouOdds.HomeOdds);
                         match.OuAway = FormatOdds(ouOdds.AwayOdds);
                     }
 
-                    // Type 5 = 1X2 Full Time
-                    var x12Odds = matchOdds.Where(o => o.Type == 5).ToList();
-                    if (x12Odds.Count >= 3)
+                    // Type 5 = 1X2 Full Time (có 3 giá trị trong 1 array)
+                    var x12Odds = matchOdds.FirstOrDefault(o => o.Type == 5);
+                    if (x12Odds != null)
                     {
-                        match.Odds1 = FormatOdds(x12Odds[0].HomeOdds);
-                        match.OddsX = FormatOdds(x12Odds[1].HomeOdds);
-                        match.Odds2 = FormatOdds(x12Odds[2].HomeOdds);
+                        // Parse from the odds data - cần parse lại từ raw data
+                        var x12Values = Parse1X2Odds(matchLiveId, rawData, type: 5);
+                        if (x12Values.Count >= 3)
+                        {
+                            match.Odds1 = x12Values[0];
+                            match.OddsX = x12Values[1];
+                            match.Odds2 = x12Values[2];
+                        }
                     }
 
                     // ========== HALF 1 (Hiệp 1) ==========
                     
                     // Type 7 = Handicap Half 1
-                    var hdpH1Odds = matchOdds.FirstOrDefault(o => o.Type == 7);
+                    var hdpH1Odds = matchOdds
+                        .Where(o => o.Type == 7)
+                        .OrderByDescending(o => Math.Abs(o.HomeOdds) + Math.Abs(o.AwayOdds))
+                        .FirstOrDefault();
+                    
                     if (hdpH1Odds != null)
                     {
                         match.HdpH1Home = FormatOdds(hdpH1Odds.HomeOdds);
@@ -376,7 +429,11 @@ namespace SportsOddsApp.Services
                     }
 
                     // Type 9 = Over/Under Half 1
-                    var ouH1Odds = matchOdds.FirstOrDefault(o => o.Type == 9);
+                    var ouH1Odds = matchOdds
+                        .Where(o => o.Type == 9)
+                        .OrderByDescending(o => Math.Abs(o.HomeOdds) + Math.Abs(o.AwayOdds))
+                        .FirstOrDefault();
+                    
                     if (ouH1Odds != null)
                     {
                         match.OuH1Home = FormatOdds(ouH1Odds.HomeOdds);
@@ -385,15 +442,45 @@ namespace SportsOddsApp.Services
                     }
 
                     // Type 8 = 1X2 Half 1
-                    var x12H1Odds = matchOdds.Where(o => o.Type == 8).ToList();
-                    if (x12H1Odds.Count >= 3)
+                    var x12H1Values = Parse1X2Odds(matchLiveId, rawData, type: 8);
+                    if (x12H1Values.Count >= 3)
                     {
-                        match.Odds1H1 = FormatOdds(x12H1Odds[0].HomeOdds);
-                        match.OddsXH1 = FormatOdds(x12H1Odds[1].HomeOdds);
-                        match.Odds2H1 = FormatOdds(x12H1Odds[2].HomeOdds);
+                        match.Odds1H1 = x12H1Values[0];
+                        match.OddsXH1 = x12H1Values[1];
+                        match.Odds2H1 = x12H1Values[2];
                     }
                 }
             }
+        }
+
+        private List<string> Parse1X2Odds(int matchLiveId, string data, int type = 5)
+        {
+            var result = new List<string>();
+            
+            try
+            {
+                // Pattern: [oddsId,[matchLiveId,type,subtype,amount,0],[value1,value2,value3]]
+                var pattern = $@"\[\d+,\[{matchLiveId},{type},\d+,[^,]*,0\],\[([^\]]+)\]\]";
+                var match = Regex.Match(data, pattern);
+                
+                if (match.Success)
+                {
+                    var values = match.Groups[1].Value.Split(',');
+                    foreach (var val in values)
+                    {
+                        if (double.TryParse(val.Trim(), 
+                            System.Globalization.NumberStyles.Any,
+                            System.Globalization.CultureInfo.InvariantCulture,
+                            out double oddsVal))
+                        {
+                            result.Add(FormatOdds(oddsVal));
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return result;
         }
 
         private string FormatHandicap(double handicap)
