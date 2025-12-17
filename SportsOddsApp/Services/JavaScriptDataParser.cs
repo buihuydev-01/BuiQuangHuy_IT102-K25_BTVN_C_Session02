@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using SportsOddsApp.Models;
 
+// Alias to avoid conflict
+using RegexMatch = System.Text.RegularExpressions.Match;
+
 namespace SportsOddsApp.Services
 {
     /// <summary>
@@ -86,7 +89,7 @@ namespace SportsOddsApp.Services
                 var leaguePattern = @"\[(\d+),'([^']*?)','[^']*','[^']*'\]";
                 var matches = Regex.Matches(data, leaguePattern);
 
-                foreach (Match match in matches)
+                foreach (RegexMatch match in matches)
                 {
                     if (int.TryParse(match.Groups[1].Value, out int leagueId))
                     {
@@ -116,7 +119,7 @@ namespace SportsOddsApp.Services
                 var matchPattern = @"\[(\d+),\d+,(\d+),'([^']*?)','([^']*?)','[^']*',\d+,'(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})',\d+";
                 var matchResults = Regex.Matches(data, matchPattern);
 
-                foreach (Match match in matchResults)
+                foreach (RegexMatch match in matchResults)
                 {
                     try
                     {
@@ -170,7 +173,7 @@ namespace SportsOddsApp.Services
                 var oddsPattern = @"\[\d+,\[(\d+),(\d+),(\d+),[^,]*,([^\]]*)\],\[([^,]*),([^\]]*)\]\]";
                 var matches = Regex.Matches(data, oddsPattern);
 
-                foreach (Match match in matches)
+                foreach (RegexMatch match in matches)
                 {
                     try
                     {

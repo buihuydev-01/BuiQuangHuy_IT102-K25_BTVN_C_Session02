@@ -7,6 +7,9 @@ using SportsOddsApp.Models;
 using System.Linq;
 using System.Globalization;
 
+// Alias to avoid conflict between Models.Match and Regex.Match
+using RegexMatch = System.Text.RegularExpressions.Match;
+
 namespace SportsOddsApp.Services
 {
     public class OddsApiService
