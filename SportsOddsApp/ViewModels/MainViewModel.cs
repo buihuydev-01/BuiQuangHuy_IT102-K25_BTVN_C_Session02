@@ -79,7 +79,7 @@ namespace SportsOddsApp.ViewModels
 
             _refreshTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(10) // Refresh every 10 seconds
+                Interval = TimeSpan.FromSeconds(1) // Refresh every 1 second
             };
             _refreshTimer.Tick += async (s, e) => await LoadMatchesAsync();
 
