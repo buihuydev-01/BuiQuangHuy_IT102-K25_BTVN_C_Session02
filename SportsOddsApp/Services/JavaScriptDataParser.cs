@@ -42,6 +42,7 @@ namespace SportsOddsApp.Services
             public double Handicap { get; set; }
             public double HomeOdds { get; set; }
             public double AwayOdds { get; set; }
+            public double Amount { get; set; }  // Mức cược (500, 1000, 2000...)
         }
 
         public ParsedData Parse(string jsContent)
@@ -221,7 +222,8 @@ namespace SportsOddsApp.Services
             try
             {
                 // Pattern: [oddsId,[matchLiveId,type,subtype,amount,handicap],[homeOdds,awayOdds]]
-                var oddsPattern = @"\[\d+,\[(\d+),(\d+),(\d+),[^,]*,([^\]]*)\],\[([^,]*),([^\]]*)\]\]";
+                // Example: [5715744360,[113397115,1,0,2000.00,0.00],[0.98,0.90]]
+                var oddsPattern = @"\[\d+,\[(\d+),(\d+),(\d+),([^,]*),([^\]]*)\],\[([^,]*),([^\]]*)\]\]";
                 var matches = Regex.Matches(data, oddsPattern);
 
                 foreach (RegexMatch match in matches)
@@ -235,8 +237,17 @@ namespace SportsOddsApp.Services
                             SubType = int.Parse(match.Groups[3].Value)
                         };
 
+                        // Parse amount (mức cược)
+                        string amountStr = match.Groups[4].Value.Trim();
+                        double amountValue = 0;
+                        double.TryParse(amountStr, 
+                            System.Globalization.NumberStyles.Any,
+                            System.Globalization.CultureInfo.InvariantCulture,
+                            out amountValue);
+                        odds.Amount = amountValue;
+
                         // Parse handicap
-                        string handicapStr = match.Groups[4].Value.Trim();
+                        string handicapStr = match.Groups[5].Value.Trim();
                         double handicapValue = 0;
                         double.TryParse(handicapStr, 
                             System.Globalization.NumberStyles.Any,
@@ -245,8 +256,8 @@ namespace SportsOddsApp.Services
                         odds.Handicap = handicapValue;
 
                         // Parse odds values
-                        string homeStr = match.Groups[5].Value.Trim();
-                        string awayStr = match.Groups[6].Value.Trim();
+                        string homeStr = match.Groups[6].Value.Trim();
+                        string awayStr = match.Groups[7].Value.Trim();
 
                         double homeValue = 0;
                         double.TryParse(homeStr,
