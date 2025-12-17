@@ -1,0 +1,196 @@
+╔════════════════════════════════════════════════════════════════╗
+║         🎯 SPORTS ODDS APP - v1.5 MAJOR UPDATE                ║
+║              HIỂN THỊ NHIỀU MỨC ODDS CÙNG LÚC!                ║
+╚════════════════════════════════════════════════════════════════╝
+
+📦 FILE: SportsOddsApp_MultiLevel.zip (42KB)
+🚀 VERSION: 1.5.0 - Multi-Level Odds Display
+📅 DATE: December 17, 2025
+✅ STATUS: Production Ready
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 VẤN ĐỀ ĐÃ GIẢI QUYẾT:
+
+  ❌ TRƯỚC: Chỉ hiển thị 1 mức odds (mức cao nhất)
+  ✅ SAU:  Hiển thị TẤT CẢ các mức (500, 1000, 2000...)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 TRƯỚC VS SAU:
+
+╔═══════════════════════╗     ╔═════════════════════════════╗
+║ v1.4: Chỉ 1 mức       ║     ║ v1.5: Tất cả các mức        ║
+╠═══════════════════════╣     ╠═════════════════════════════╣
+║ Chấp H1: 0.00         ║     ║ Chấp H1 (Tất cả mức):       ║
+║ Odds: 0.68 | -0.96    ║     ║ • 0.25  0.73 | 0.71  [500]  ║
+║                       ║     ║ • 0.00  0.68 | -0.96 [300]  ║
+║ ← Thiếu mức 500, 200! ║     ║ • 0.25 -0.93 | 0.65  [200]  ║
+╚═══════════════════════╝     ╚═════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎨 UI MỚI:
+
+┌─────────────────────────────────────────────────────────────┐
+│ Thời Gian │ Trận đấu          │ Chấp H1 (Tất cả mức)       │
+├───────────┼───────────────────┼────────────────────────────┤
+│  16:30    │ e-Poland -        │ 0.50   0.75 | 0.97  [500]  │
+│   Live    │ e-Hungary         │ 0.00   0.85 | 0.59  [300]  │
+│           │                   │ 0.50  -0.99 | 0.71  [200]  │
+│           │                   │                             │
+│           │                   │ ↑ Scroll khi nhiều mức ↑   │
+└───────────┴───────────────────┴────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 THAY ĐỔI CHÍNH:
+
+1. Model mới:
+   ├── OddsLevel (Line, HomeOdds, AwayOdds, Amount)
+   └── Odds1X2 (Odds1, OddsX, Odds2, Amount)
+
+2. Match properties mới:
+   ├── HdpH1Levels (ObservableCollection)
+   ├── OuH1Levels (ObservableCollection)
+   ├── Odds1X2H1Levels (ObservableCollection)
+   ├── HdpLevels (Full Time)
+   ├── OuLevels (Full Time)
+   └── Odds1X2Levels (Full Time)
+
+3. Parser cập nhật:
+   ├── Lấy TẤT CẢ các mức, không chỉ 1 mức
+   ├── Sắp xếp theo Amount (500 → 200)
+   └── Lưu vào ObservableCollection
+
+4. UI cập nhật:
+   ├── ItemsControl để hiển thị list
+   ├── ScrollViewer (MaxHeight=150px)
+   ├── Border + colors đẹp
+   └── Responsive layout
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✨ TÍNH NĂNG MỚI:
+
+✅ Xem TẤT CẢ các mức cược (500, 1000, 2000...)
+✅ Scroll mượt mà khi có nhiều mức
+✅ Màu sắc phân biệt: Purple (Chấp), Orange (T/X), RGB (1X2)
+✅ Layout compact, không chiếm nhiều chỗ
+✅ Auto-sort theo amount (cao → thấp)
+✅ Backwards compatible (old code vẫn chạy)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📥 DOWNLOAD & RUN:
+
+1. Download: SportsOddsApp_MultiLevel.zip (42KB)
+
+2. Extract & Open in Visual Studio 2022
+
+3. Build: Ctrl+Shift+B
+
+4. Run: F5
+
+5. Click "Tự động" để refresh
+
+6. Xem cột "Chấp H1 (Tất cả mức)"!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 VÍ DỤ THỰC TẾ:
+
+Trận: e-Portugal vs e-Spain (16:15)
+
+API trả về 3 mức Chấp H1:
+┌─────────────────────────────────────────────┐
+│ [113751810,7,0,500.00,0.25],[0.73,0.71]     │ ← Mức 500
+│ [113751810,7,0,300.00,0.00],[0.68,-0.96]    │ ← Mức 300
+│ [113751810,7,0,200.00,0.25],[-0.93,0.65]    │ ← Mức 200
+└─────────────────────────────────────────────┘
+
+Tool hiển thị:
+┌──────────────────────────────┐
+│ Chấp H1 (Tất cả mức)         │
+├──────────────────────────────┤
+│ 0.25    0.73 | 0.71   [500]  │
+│ 0.00    0.68 | -0.96  [300]  │
+│ 0.25   -0.93 | 0.65   [200]  │
+└──────────────────────────────┘
+
+✅ Hiển thị đầy đủ 3 mức!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 CÁC CỘT MỚI:
+
+1. Chấp H1 (Tất cả mức) - Width: 220px
+   └── Hiển thị: Line | Home | Away
+
+2. T/X H1 (Tất cả mức) - Width: 220px
+   └── Hiển thị: Line | Over | Under
+
+3. 1X2 H1 (Tất cả mức) - Width: 200px
+   └── Hiển thị: 1 | X | 2
+
+Tương tự cho Full Time (FT)!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎨 MÀU SẮC:
+
+• Line Chấp:   #9B59B6 (Purple)
+• Line T/X:    #F39C12 (Orange)
+• Home Odds:   #E74C3C (Red)
+• Away Odds:   #3498DB (Blue)
+• Over Odds:   #E67E22 (Orange)
+• Under Odds:  #16A085 (Teal)
+• 1X2 (1):     #E74C3C (Red)
+• 1X2 (X):     #95A5A6 (Gray)
+• 1X2 (2):     #3498DB (Blue)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ BACKWARDS COMPATIBLE:
+
+Old properties vẫn hoạt động:
+• HdpH1Home, HdpH1Away, HdpH1Line
+• OuH1Home, OuH1Away, OuH1Line
+• Odds1H1, OddsXH1, Odds2H1
+
+NEW collections thêm vào:
+• HdpH1Levels (tất cả các mức)
+• OuH1Levels (tất cả các mức)
+• Odds1X2H1Levels (tất cả các mức)
+
+→ Code cũ vẫn chạy, code mới có thêm info!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 TÀI LIỆU:
+
+• MULTI_LEVEL_ODDS_UPDATE.md - Chi tiết đầy đủ
+• README.md - Hướng dẫn cài đặt
+• QUICK_START.md - Bắt đầu nhanh
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 SẴN SÀNG SỬ DỤNG!
+
+┌────────────────────────────────────────────────┐
+│  ✅ Download: SportsOddsApp_MultiLevel.zip     │
+│  ✅ Extract & Open in VS 2022                  │
+│  ✅ Build & Run                                │
+│  ✅ Xem TẤT CẢ các mức odds! 🎉                │
+└────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 VERSION 1.5.0 - PRODUCTION READY!
+
+Giờ bạn không bỏ lỡ bất kỳ mức cược nào!
+Hãy download và test ngay! 🚀
+
+╔════════════════════════════════════════════════════════════════╗
+║    🎯 HAPPY BETTING WITH FULL ODDS VISIBILITY! 🍀             ║
+╚════════════════════════════════════════════════════════════════╝

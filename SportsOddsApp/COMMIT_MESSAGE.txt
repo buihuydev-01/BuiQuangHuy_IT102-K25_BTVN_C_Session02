@@ -1,0 +1,42 @@
+Initial commit - Sports Odds Monitor v1.1
+
+✨ Features:
+- Real-time sports odds monitoring from API
+- Auto-refresh every 10 seconds (configurable)
+- Cookie input in UI (no code editing needed!)
+- Beautiful WPF interface with DataGrid
+- MVVM architecture
+- JavaScript data parser for complex response
+- Comprehensive documentation
+
+🏗️ Tech Stack:
+- .NET 6.0 WPF
+- C# 10.0
+- HttpClient for API calls
+- Regex for data parsing
+- INotifyPropertyChanged for data binding
+- ObservableCollection for live updates
+
+✅ Bug Fixes:
+- CS0206: Property ref/out parameter issue (3 places)
+- CS0104: Match ambiguous reference (7 places)
+- All errors resolved - 0 warnings
+
+📚 Documentation:
+- README.md - Main overview
+- QUICK_START.md - Installation guide
+- COOKIE_FEATURE.md - Cookie input feature
+- HOW_TO_UPDATE_COOKIES.md - Update guide
+- PROJECT_STRUCTURE.md - Architecture details
+- CHANGELOG.md - Version history
+- SUMMARY.md - Quick reference
+
+🎯 Ready to use:
+- Download
+- Build
+- Run
+- Monitor sports odds in real-time!
+
+Version: 1.1.0
+Status: ✅ Production Ready
+Date: December 17, 2025

@@ -1,0 +1,182 @@
+═══════════════════════════════════════════════════════════════
+  ✨ CẬP NHẬT PHIÊN BẢN 1.1 - TÍNH NĂNG MỚI ✨
+═══════════════════════════════════════════════════════════════
+
+📦 File: SportsOddsApp.zip (37KB)
+📅 Ngày: 17/12/2025
+🔧 Version: 1.1.0
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ ĐÃ FIX:
+
+1. ❌ Lỗi CS0104: 'Match' is an ambiguous reference
+   ✅ FIX: Thêm alias "using RegexMatch = ..."
+   
+2. ❌ Phải sửa code để update cookie
+   ✅ FIX: Thêm ô nhập cookie trong UI
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 TÍNH NĂNG MỚI:
+
+🍪 1. Ô NHẬP COOKIE TRỰC TIẾP TRONG UI
+
+   Giao diện mới:
+   ┌─────────────────────────────────────────────────┐
+   │  🔄 Làm mới   ▶ Tự động   ⏸ Dừng                │
+   │                                                  │
+   │  🍪 Cookie/Session: [_________________] ❓       │
+   └─────────────────────────────────────────────────┘
+
+   Cách dùng:
+   1. Lấy cookie từ browser (F12 → Network → Copy)
+   2. Paste vào ô "Cookie/Session"
+   3. Nhấn Enter → Cookie tự động cập nhật!
+   4. Click "🔄 Làm mới" để test
+
+   ⭐ Ưu điểm:
+   - Không cần sửa code
+   - Không cần restart app
+   - Có nút "❓ Hướng dẫn" chi tiết
+   - Tự động validate
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📁 FILES ĐÃ CẬP NHẬT:
+
+✓ Services/OddsApiService.cs
+  → Thêm constructor nhận cookie parameter
+  → Cookie có thể thay đổi runtime
+
+✓ Services/JavaScriptDataParser.cs
+  → Fix namespace conflict với RegexMatch alias
+
+✓ ViewModels/MainViewModel.cs
+  → Thêm property CookieString
+  → Tự động recreate API service khi cookie thay đổi
+  → Load cookie từ config file
+
+✓ MainWindow.xaml
+  → Thêm TextBox để nhập cookie
+  → Thêm nút "❓ Hướng dẫn"
+  → Layout mới với 2 rows trong toolbar
+
+✓ MainWindow.xaml.cs
+  → Thêm dialog hiển thị hướng dẫn lấy cookie
+
+✓ appsettings.json
+  → Thêm field "FullCookieString"
+
+➕ COOKIE_FEATURE.md (MỚI)
+  → Tài liệu chi tiết về tính năng cookie
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 HƯỚNG DẪN SỬ DỤNG:
+
+BƯỚC 1: Download file mới
+   - File ZIP mới: /workspace/SportsOddsApp.zip (37KB)
+   - Trong Cursor: Ctrl+Shift+E → Tìm SportsOddsApp.zip
+   - Right-click → Download
+
+BƯỚC 2: Xóa folder cũ (nếu có)
+   - Xóa folder SportsOddsApp cũ trên máy
+
+BƯỚC 3: Giải nén file mới
+   - Extract SportsOddsApp.zip vào C:\Projects\
+
+BƯỚC 4: Mở trong Visual Studio 2022
+   - Open → SportsOddsApp.sln
+   - Build → Rebuild Solution (Ctrl+Shift+B)
+
+BƯỚC 5: Chạy app
+   - Nhấn F5
+   
+BƯỚC 6: Test tính năng mới
+   - Tìm ô "🍪 Cookie/Session:" ở toolbar
+   - Click nút "❓ Hướng dẫn" để xem cách lấy cookie
+   - Paste cookie mới vào ô
+   - Click "🔄 Làm mới"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 TÀI LIỆU:
+
+✓ README.md              → Tổng quan
+✓ QUICK_START.md         → Hướng dẫn nhanh
+✓ COOKIE_FEATURE.md      → Tính năng cookie (MỚI!)
+✓ HOW_TO_UPDATE_COOKIES.md → Chi tiết update cookie
+✓ PROJECT_STRUCTURE.md   → Cấu trúc dự án
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 TIPS:
+
+1. Khi cookie hết hạn:
+   → Chỉ cần paste cookie mới vào ô
+   → Không cần restart app!
+
+2. Muốn lưu cookie vĩnh viễn:
+   → Edit appsettings.json
+   → Update "FullCookieString"
+
+3. Quên cách lấy cookie:
+   → Click nút "❓ Hướng dẫn"
+
+4. Test cookie có hoạt động:
+   → Paste cookie → Enter
+   → Click "🔄 Làm mới"
+   → Xem có load được dữ liệu không
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🐛 NẾU GẶP VẤN ĐỀ:
+
+❌ Build lỗi:
+   → Clean Solution
+   → Rebuild Solution
+   → Check .NET 6.0 đã cài chưa
+
+❌ Cookie không work:
+   → Lấy cookie MỚI từ browser
+   → Check format: "key1=value1; key2=value2"
+   → Không có xuống dòng
+
+❌ Không thấy ô nhập cookie:
+   → Check đã download file MỚI chưa
+   → MainWindow.xaml phải có Row 2 với Cookie input
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 STATS:
+
+Files changed: 7
+Lines added: ~150
+Features: +1 (Cookie Input)
+Bugs fixed: 1 (CS0104)
+Version: 1.0 → 1.1
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ CHECKLIST:
+
+- [ ] Download SportsOddsApp.zip mới
+- [ ] Giải nén vào C:\Projects\
+- [ ] Mở Visual Studio 2022
+- [ ] Open SportsOddsApp.sln
+- [ ] Build (Ctrl+Shift+B)
+- [ ] Run (F5)
+- [ ] Tìm ô "🍪 Cookie/Session"
+- [ ] Test nhập cookie mới
+- [ ] Click "❓ Hướng dẫn" để xem guide
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 ENJOY YOUR NEW FEATURES! 🎉
+
+Giờ đây bạn có thể update cookie dễ dàng mà không cần sửa code!
+
+Any questions? Check COOKIE_FEATURE.md for details!
+
+═══════════════════════════════════════════════════════════════
