@@ -186,24 +186,30 @@ namespace SportsOddsApp.Services
 
                         // Parse handicap
                         string handicapStr = match.Groups[4].Value.Trim();
+                        double handicapValue = 0;
                         double.TryParse(handicapStr, 
                             System.Globalization.NumberStyles.Any,
                             System.Globalization.CultureInfo.InvariantCulture,
-                            out odds.Handicap);
+                            out handicapValue);
+                        odds.Handicap = handicapValue;
 
                         // Parse odds values
                         string homeStr = match.Groups[5].Value.Trim();
                         string awayStr = match.Groups[6].Value.Trim();
 
+                        double homeValue = 0;
                         double.TryParse(homeStr,
                             System.Globalization.NumberStyles.Any,
                             System.Globalization.CultureInfo.InvariantCulture,
-                            out odds.HomeOdds);
+                            out homeValue);
+                        odds.HomeOdds = homeValue;
 
+                        double awayValue = 0;
                         double.TryParse(awayStr,
                             System.Globalization.NumberStyles.Any,
                             System.Globalization.CultureInfo.InvariantCulture,
-                            out odds.AwayOdds);
+                            out awayValue);
+                        odds.AwayOdds = awayValue;
 
                         oddsList.Add(odds);
                     }
