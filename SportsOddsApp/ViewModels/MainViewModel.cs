@@ -12,13 +12,30 @@ namespace SportsOddsApp.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly OddsApiService _apiService;
+        private OddsApiService _apiService;
         private readonly DispatcherTimer _refreshTimer;
         private bool _isLoading;
         private string _statusMessage;
         private DateTime _lastUpdate;
+        private string _cookieString;
 
         public ObservableCollection<Match> Matches { get; set; }
+
+        public string CookieString
+        {
+            get => _cookieString;
+            set
+            {
+                _cookieString = value;
+                OnPropertyChanged(nameof(CookieString));
+                // Recreate API service with new cookie
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    _apiService = new OddsApiService(value);
+                    StatusMessage = "Cookie đã cập nhật";
+                }
+            }
+        }
 
         public bool IsLoading
         {
@@ -51,7 +68,9 @@ namespace SportsOddsApp.ViewModels
 
         public MainViewModel()
         {
-            _apiService = new OddsApiService();
+            // Load cookie from config or use default
+            _cookieString = LoadSavedCookie();
+            _apiService = new OddsApiService(_cookieString);
             Matches = new ObservableCollection<Match>();
             
             RefreshCommand = new RelayCommand(async () => await LoadMatchesAsync());
@@ -66,6 +85,29 @@ namespace SportsOddsApp.ViewModels
 
             // Initial load
             Task.Run(async () => await LoadMatchesAsync());
+        }
+
+        private string LoadSavedCookie()
+        {
+            // Try to load from appsettings.json or return default
+            try
+            {
+                var configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+                if (System.IO.File.Exists(configPath))
+                {
+                    var json = System.IO.File.ReadAllText(configPath);
+                    // Simple parse - you can use Newtonsoft.Json for better parsing
+                    var match = System.Text.RegularExpressions.Regex.Match(json, @"""FullCookieString""\s*:\s*""([^""]*)""");
+                    if (match.Success && !string.IsNullOrWhiteSpace(match.Groups[1].Value))
+                    {
+                        return match.Groups[1].Value;
+                    }
+                }
+            }
+            catch { }
+
+            // Return default cookie
+            return "ASP.NET_SessionId=thj4vns4z2mckcjz5rzaopqc; _hjSession_1325134=eyJpZCI6ImIzMDMzNTZhLTYxYWEtNDM2Ny04ZTVlLTQyYTM1OTUzYzMxMSIsImMiOjE3NjU5NTQ4MDkwNDUsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjoxLCJzcCI6MH0=; fullScreenAds=true";
         }
 
         private async Task LoadMatchesAsync()

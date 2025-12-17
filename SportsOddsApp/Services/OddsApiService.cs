@@ -15,11 +15,18 @@ namespace SportsOddsApp.Services
     public class OddsApiService
     {
         private readonly HttpClient _httpClient;
+        private readonly string _cookieString;
         private const string BaseUrl = "https://sports.wwyyuuvv22.com";
         private const string ApiUrl = "/web-root/restricted/odds-display/today-data.aspx";
 
-        public OddsApiService()
+        public OddsApiService() : this(null)
         {
+        }
+
+        public OddsApiService(string cookieString)
+        {
+            _cookieString = cookieString ?? GetDefaultCookie();
+            
             var handler = new HttpClientHandler
             {
                 UseCookies = true
@@ -29,12 +36,17 @@ namespace SportsOddsApp.Services
             SetupHeaders();
         }
 
+        private string GetDefaultCookie()
+        {
+            return "ASP.NET_SessionId=thj4vns4z2mckcjz5rzaopqc; _hjSession_1325134=eyJpZCI6ImIzMDMzNTZhLTYxYWEtNDM2Ny04ZTVlLTQyYTM1OTUzYzMxMSIsImMiOjE3NjU5NTQ4MDkwNDUsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjoxLCJzcCI6MH0=; _hjSessionUser_1325134=eyJpZCI6ImVjMWE4OTkwLTZhMDAtNTNjYi05MmM2LWEwMmE1Njg1YjNiNyIsImNyZWF0ZWQiOjE3NjU5NTQ4MDkwNDUsImV4aXN0aW5nIjp0cnVlfQ==; fullScreenAds=true; states=:1:1:::1:1:::::::::1765954828164:1765954828206:1765954828206:1765954828208:1765954828208";
+        }
+
         private void SetupHeaders()
         {
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.Add("accept", "*/*");
             _httpClient.DefaultRequestHeaders.Add("accept-language", "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5");
-            _httpClient.DefaultRequestHeaders.Add("Cookie", "ASP.NET_SessionId=thj4vns4z2mckcjz5rzaopqc; _hjSession_1325134=eyJpZCI6ImIzMDMzNTZhLTYxYWEtNDM2Ny04ZTVlLTQyYTM1OTUzYzMxMSIsImMiOjE3NjU5NTQ4MDkwNDUsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjoxLCJzcCI6MH0=; _hjSessionUser_1325134=eyJpZCI6ImVjMWE4OTkwLTZhMDAtNTNjYi05MmM2LWEwMmE1Njg1YjNiNyIsImNyZWF0ZWQiOjE3NjU5NTQ4MDkwNDUsImV4aXN0aW5nIjp0cnVlfQ==; fullScreenAds=true; states=:1:1:::1:1:::::::::1765954828164:1765954828206:1765954828206:1765954828208:1765954828208");
+            _httpClient.DefaultRequestHeaders.Add("Cookie", _cookieString);
             _httpClient.DefaultRequestHeaders.Add("priority", "u=1, i");
             _httpClient.DefaultRequestHeaders.Add("referer", "https://sports.wwyyuuvv22.com/web-root/restricted/default.aspx?loginname=e58bcafe29635564953cc8958b63389a&lang=VI_VN&oddstyle=MY&theme=sbo&oddsmode=double&jd=jd&u=10028yy_v86h1831617sbd&in=0");
             _httpClient.DefaultRequestHeaders.Add("sec-ch-ua", "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"");
