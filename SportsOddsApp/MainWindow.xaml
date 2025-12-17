@@ -220,30 +220,56 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!-- Cược chấp - Tài/Xỉu -->
-                <DataGridTemplateColumn Header="Cược chấp&#x0a;Tài/Xỉu" Width="100">
+                <!-- Chấp FT (Full Time) -->
+                <DataGridTemplateColumn Header="Chấp FT" Width="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" 
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" 
                                            Text="{Binding HdpHome}" 
                                            Foreground="#E74C3C"
-                                           FontWeight="Bold"/>
-                                <TextBlock Grid.Row="1" 
+                                           FontWeight="Bold"
+                                           Margin="5,0"/>
+                                <TextBlock Grid.Column="1" 
                                            Text="{Binding HdpAway}" 
                                            Foreground="#3498DB"
-                                           FontWeight="Bold"/>
+                                           FontWeight="Bold"
+                                           Margin="5,0"/>
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!-- 1X2 -->
-                <DataGridTemplateColumn Header="1X2" Width="120">
+                <!-- T/X FT (Tài/Xỉu Full Time) -->
+                <DataGridTemplateColumn Header="T/X FT" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" 
+                                           Text="{Binding OuHome}" 
+                                           Foreground="#E67E22"
+                                           FontWeight="Bold"
+                                           Margin="5,0"/>
+                                <TextBlock Grid.Column="1" 
+                                           Text="{Binding OuAway}" 
+                                           Foreground="#16A085"
+                                           FontWeight="Bold"
+                                           Margin="5,0"/>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- 1X2 FT -->
+                <DataGridTemplateColumn Header="1X2 FT" Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -264,8 +290,23 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!-- Lẻ/Chẵn -->
-                <DataGridTemplateColumn Header="Lẻ/Chẵn" Width="100">
+                <!-- Chấp H1 -->
+                <DataGridTemplateColumn Header="Chấp H1" Width="80">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding HdpH1Line}" 
+                                           FontWeight="Bold"
+                                           Foreground="#9B59B6"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,2"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Odds Chấp H1 -->
+                <DataGridTemplateColumn Header="Odds Chấp H1" Width="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
@@ -273,43 +314,77 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="-" FontWeight="Bold"/>
-                                <TextBlock Grid.Column="1" Text="-" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="0" 
+                                           Text="{Binding HdpH1Home}" 
+                                           Foreground="#E74C3C"
+                                           FontWeight="Bold"
+                                           Margin="5,0"/>
+                                <TextBlock Grid.Column="1" 
+                                           Text="{Binding HdpH1Away}" 
+                                           Foreground="#3498DB"
+                                           FontWeight="Bold"
+                                           Margin="5,0"/>
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!-- Hiệp 1 - Tài/Xỉu -->
-                <DataGridTemplateColumn Header="Hiệp 1&#x0a;Tài/Xỉu" Width="100">
+                <!-- T/X H1 -->
+                <DataGridTemplateColumn Header="T/X H1" Width="80">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding OuH1Line}" 
+                                           FontWeight="Bold"
+                                           Foreground="#F39C12"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,2"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Odds T/X H1 -->
+                <DataGridTemplateColumn Header="Odds T/X H1" Width="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" 
-                                           Text="{Binding OuHome}" 
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" 
+                                           Text="{Binding OuH1Home}" 
                                            Foreground="#E67E22"
-                                           FontWeight="Bold"/>
-                                <TextBlock Grid.Row="1" 
-                                           Text="{Binding OuAway}" 
+                                           FontWeight="Bold"
+                                           Margin="5,0"/>
+                                <TextBlock Grid.Column="1" 
+                                           Text="{Binding OuH1Away}" 
                                            Foreground="#16A085"
-                                           FontWeight="Bold"/>
+                                           FontWeight="Bold"
+                                           Margin="5,0"/>
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!-- Hiệp 1 - 1X2 -->
-                <DataGridTemplateColumn Header="Hiệp 1&#x0a;1X2" Width="120">
+                <!-- 1X2 H1 -->
+                <DataGridTemplateColumn Header="1X2 H1" Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <TextBlock Text="-" Margin="5,0"/>
-                                <TextBlock Text="-" Margin="5,0"/>
-                                <TextBlock Text="-" Margin="5,0"/>
+                                <TextBlock Text="{Binding Odds1H1}" 
+                                           Margin="5,0"
+                                           FontWeight="Bold"
+                                           Foreground="#E74C3C"/>
+                                <TextBlock Text="{Binding OddsXH1}" 
+                                           Margin="5,0"
+                                           FontWeight="Bold"
+                                           Foreground="#95A5A6"/>
+                                <TextBlock Text="{Binding Odds2H1}" 
+                                           Margin="5,0"
+                                           FontWeight="Bold"
+                                           Foreground="#3498DB"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

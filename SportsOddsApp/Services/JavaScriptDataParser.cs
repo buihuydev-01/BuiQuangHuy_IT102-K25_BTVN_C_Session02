@@ -323,7 +323,9 @@ namespace SportsOddsApp.Services
 
                 if (matchOdds.Any())
                 {
-                    // Type 1 = Handicap
+                    // ========== FULL TIME (Cả trận) ==========
+                    
+                    // Type 1 = Handicap Full Time
                     var hdpOdds = matchOdds.FirstOrDefault(o => o.Type == 1);
                     if (hdpOdds != null)
                     {
@@ -331,7 +333,7 @@ namespace SportsOddsApp.Services
                         match.HdpAway = FormatOdds(hdpOdds.AwayOdds);
                     }
 
-                    // Type 3 = Over/Under
+                    // Type 3 = Over/Under Full Time
                     var ouOdds = matchOdds.FirstOrDefault(o => o.Type == 3);
                     if (ouOdds != null)
                     {
@@ -339,7 +341,7 @@ namespace SportsOddsApp.Services
                         match.OuAway = FormatOdds(ouOdds.AwayOdds);
                     }
 
-                    // Type 5 = 1X2
+                    // Type 5 = 1X2 Full Time
                     var x12Odds = matchOdds.Where(o => o.Type == 5).ToList();
                     if (x12Odds.Count >= 3)
                     {
@@ -347,8 +349,45 @@ namespace SportsOddsApp.Services
                         match.OddsX = FormatOdds(x12Odds[1].HomeOdds);
                         match.Odds2 = FormatOdds(x12Odds[2].HomeOdds);
                     }
+
+                    // ========== HALF 1 (Hiệp 1) ==========
+                    
+                    // Type 7 = Handicap Half 1
+                    var hdpH1Odds = matchOdds.FirstOrDefault(o => o.Type == 7);
+                    if (hdpH1Odds != null)
+                    {
+                        match.HdpH1Home = FormatOdds(hdpH1Odds.HomeOdds);
+                        match.HdpH1Away = FormatOdds(hdpH1Odds.AwayOdds);
+                        match.HdpH1Line = FormatHandicap(hdpH1Odds.Handicap);
+                    }
+
+                    // Type 9 = Over/Under Half 1
+                    var ouH1Odds = matchOdds.FirstOrDefault(o => o.Type == 9);
+                    if (ouH1Odds != null)
+                    {
+                        match.OuH1Home = FormatOdds(ouH1Odds.HomeOdds);
+                        match.OuH1Away = FormatOdds(ouH1Odds.AwayOdds);
+                        match.OuH1Line = FormatHandicap(ouH1Odds.Handicap);
+                    }
+
+                    // Type 8 = 1X2 Half 1
+                    var x12H1Odds = matchOdds.Where(o => o.Type == 8).ToList();
+                    if (x12H1Odds.Count >= 3)
+                    {
+                        match.Odds1H1 = FormatOdds(x12H1Odds[0].HomeOdds);
+                        match.OddsXH1 = FormatOdds(x12H1Odds[1].HomeOdds);
+                        match.Odds2H1 = FormatOdds(x12H1Odds[2].HomeOdds);
+                    }
                 }
             }
+        }
+
+        private string FormatHandicap(double handicap)
+        {
+            if (Math.Abs(handicap) < 0.01)
+                return "0";
+
+            return handicap > 0 ? $"+{handicap:F2}" : $"{handicap:F2}";
         }
 
         private string FormatOdds(double odds)
