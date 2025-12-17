@@ -375,79 +375,128 @@ namespace SportsOddsApp.Services
                 {
                     // ========== FULL TIME (Cả trận) ==========
                     
-                    // Type 1 = Handicap Full Time (lấy odds chính - thường là mức 1500 hoặc 2000)
-                    var hdpOdds = matchOdds
+                    // Type 1 = Handicap Full Time - LẤY TẤT CẢ CÁC MỨC
+                    var hdpOddsList = matchOdds
                         .Where(o => o.Type == 1)
-                        .OrderByDescending(o => Math.Abs(o.HomeOdds) + Math.Abs(o.AwayOdds))
-                        .FirstOrDefault();
+                        .OrderByDescending(o => o.Amount) // Sắp xếp theo mức cược
+                        .ToList();
                     
-                    if (hdpOdds != null)
+                    foreach (var odds in hdpOddsList)
                     {
-                        match.HdpHome = FormatOdds(hdpOdds.HomeOdds);
-                        match.HdpAway = FormatOdds(hdpOdds.AwayOdds);
-                    }
-
-                    // Type 3 = Over/Under Full Time
-                    var ouOdds = matchOdds
-                        .Where(o => o.Type == 3)
-                        .OrderByDescending(o => Math.Abs(o.HomeOdds) + Math.Abs(o.AwayOdds))
-                        .FirstOrDefault();
-                    
-                    if (ouOdds != null)
-                    {
-                        match.OuHome = FormatOdds(ouOdds.HomeOdds);
-                        match.OuAway = FormatOdds(ouOdds.AwayOdds);
-                    }
-
-                    // Type 5 = 1X2 Full Time (có 3 giá trị trong 1 array)
-                    var x12Odds = matchOdds.FirstOrDefault(o => o.Type == 5);
-                    if (x12Odds != null)
-                    {
-                        // Parse from the odds data - cần parse lại từ raw data
-                        var x12Values = Parse1X2Odds(matchLiveId, rawData, type: 5);
-                        if (x12Values.Count >= 3)
+                        match.HdpLevels.Add(new OddsLevel
                         {
-                            match.Odds1 = x12Values[0];
-                            match.OddsX = x12Values[1];
-                            match.Odds2 = x12Values[2];
-                        }
+                            Line = FormatHandicap(odds.Handicap),
+                            HomeOdds = FormatOdds(odds.HomeOdds),
+                            AwayOdds = FormatOdds(odds.AwayOdds),
+                            Amount = odds.Amount.ToString("0")
+                        });
+                    }
+                    
+                    // Giữ backwards compatibility - lấy mức cao nhất cho old properties
+                    var bestHdp = hdpOddsList.FirstOrDefault();
+                    if (bestHdp != null)
+                    {
+                        match.HdpHome = FormatOdds(bestHdp.HomeOdds);
+                        match.HdpAway = FormatOdds(bestHdp.AwayOdds);
+                    }
+
+                    // Type 3 = Over/Under Full Time - LẤY TẤT CẢ CÁC MỨC
+                    var ouOddsList = matchOdds
+                        .Where(o => o.Type == 3)
+                        .OrderByDescending(o => o.Amount)
+                        .ToList();
+                    
+                    foreach (var odds in ouOddsList)
+                    {
+                        match.OuLevels.Add(new OddsLevel
+                        {
+                            Line = FormatHandicap(odds.Handicap),
+                            HomeOdds = FormatOdds(odds.HomeOdds),
+                            AwayOdds = FormatOdds(odds.AwayOdds),
+                            Amount = odds.Amount.ToString("0")
+                        });
+                    }
+                    
+                    var bestOu = ouOddsList.FirstOrDefault();
+                    if (bestOu != null)
+                    {
+                        match.OuHome = FormatOdds(bestOu.HomeOdds);
+                        match.OuAway = FormatOdds(bestOu.AwayOdds);
+                    }
+
+                    // Type 5 = 1X2 Full Time - Parse tất cả các mức
+                    ParseAll1X2Odds(matchLiveId, rawData, 5, match.Odds1X2Levels);
+                    
+                    // Backwards compatibility
+                    var best1X2 = match.Odds1X2Levels.FirstOrDefault();
+                    if (best1X2 != null)
+                    {
+                        match.Odds1 = best1X2.Odds1;
+                        match.OddsX = best1X2.OddsX;
+                        match.Odds2 = best1X2.Odds2;
                     }
 
                     // ========== HALF 1 (Hiệp 1) ==========
                     
-                    // Type 7 = Handicap Half 1
-                    var hdpH1Odds = matchOdds
+                    // Type 7 = Handicap Half 1 - LẤY TẤT CẢ CÁC MỨC
+                    var hdpH1OddsList = matchOdds
                         .Where(o => o.Type == 7)
-                        .OrderByDescending(o => Math.Abs(o.HomeOdds) + Math.Abs(o.AwayOdds))
-                        .FirstOrDefault();
+                        .OrderByDescending(o => o.Amount)
+                        .ToList();
                     
-                    if (hdpH1Odds != null)
+                    foreach (var odds in hdpH1OddsList)
                     {
-                        match.HdpH1Home = FormatOdds(hdpH1Odds.HomeOdds);
-                        match.HdpH1Away = FormatOdds(hdpH1Odds.AwayOdds);
-                        match.HdpH1Line = FormatHandicap(hdpH1Odds.Handicap);
+                        match.HdpH1Levels.Add(new OddsLevel
+                        {
+                            Line = FormatHandicap(odds.Handicap),
+                            HomeOdds = FormatOdds(odds.HomeOdds),
+                            AwayOdds = FormatOdds(odds.AwayOdds),
+                            Amount = odds.Amount.ToString("0")
+                        });
+                    }
+                    
+                    var bestHdpH1 = hdpH1OddsList.FirstOrDefault();
+                    if (bestHdpH1 != null)
+                    {
+                        match.HdpH1Home = FormatOdds(bestHdpH1.HomeOdds);
+                        match.HdpH1Away = FormatOdds(bestHdpH1.AwayOdds);
+                        match.HdpH1Line = FormatHandicap(bestHdpH1.Handicap);
                     }
 
-                    // Type 9 = Over/Under Half 1
-                    var ouH1Odds = matchOdds
+                    // Type 9 = Over/Under Half 1 - LẤY TẤT CẢ CÁC MỨC
+                    var ouH1OddsList = matchOdds
                         .Where(o => o.Type == 9)
-                        .OrderByDescending(o => Math.Abs(o.HomeOdds) + Math.Abs(o.AwayOdds))
-                        .FirstOrDefault();
+                        .OrderByDescending(o => o.Amount)
+                        .ToList();
                     
-                    if (ouH1Odds != null)
+                    foreach (var odds in ouH1OddsList)
                     {
-                        match.OuH1Home = FormatOdds(ouH1Odds.HomeOdds);
-                        match.OuH1Away = FormatOdds(ouH1Odds.AwayOdds);
-                        match.OuH1Line = FormatHandicap(ouH1Odds.Handicap);
+                        match.OuH1Levels.Add(new OddsLevel
+                        {
+                            Line = FormatHandicap(odds.Handicap),
+                            HomeOdds = FormatOdds(odds.HomeOdds),
+                            AwayOdds = FormatOdds(odds.AwayOdds),
+                            Amount = odds.Amount.ToString("0")
+                        });
+                    }
+                    
+                    var bestOuH1 = ouH1OddsList.FirstOrDefault();
+                    if (bestOuH1 != null)
+                    {
+                        match.OuH1Home = FormatOdds(bestOuH1.HomeOdds);
+                        match.OuH1Away = FormatOdds(bestOuH1.AwayOdds);
+                        match.OuH1Line = FormatHandicap(bestOuH1.Handicap);
                     }
 
-                    // Type 8 = 1X2 Half 1
-                    var x12H1Values = Parse1X2Odds(matchLiveId, rawData, type: 8);
-                    if (x12H1Values.Count >= 3)
+                    // Type 8 = 1X2 Half 1 - Parse tất cả các mức
+                    ParseAll1X2Odds(matchLiveId, rawData, 8, match.Odds1X2H1Levels);
+                    
+                    var best1X2H1 = match.Odds1X2H1Levels.FirstOrDefault();
+                    if (best1X2H1 != null)
                     {
-                        match.Odds1H1 = x12H1Values[0];
-                        match.OddsXH1 = x12H1Values[1];
-                        match.Odds2H1 = x12H1Values[2];
+                        match.Odds1H1 = best1X2H1.Odds1;
+                        match.OddsXH1 = best1X2H1.OddsX;
+                        match.Odds2H1 = best1X2H1.Odds2;
                     }
                 }
             }
@@ -481,6 +530,57 @@ namespace SportsOddsApp.Services
             catch { }
 
             return result;
+        }
+
+        /// <summary>
+        /// Parse ALL 1X2 odds levels for a match
+        /// </summary>
+        private void ParseAll1X2Odds(int matchLiveId, string data, int type, System.Collections.ObjectModel.ObservableCollection<Odds1X2> collection)
+        {
+            try
+            {
+                // Pattern: [oddsId,[matchLiveId,type,subtype,amount,0],[val1,val2,val3]]
+                var pattern = $@"\[(\d+),\[{matchLiveId},{type},\d+,([^,]*),0\],\[([^\]]+)\]\]";
+                var matches = Regex.Matches(data, pattern);
+                
+                foreach (RegexMatch match in matches)
+                {
+                    try
+                    {
+                        var amount = match.Groups[2].Value;
+                        var valuesStr = match.Groups[3].Value;
+                        var values = valuesStr.Split(',');
+                        
+                        if (values.Length >= 3)
+                        {
+                            double val1 = 0, val2 = 0, val3 = 0;
+                            
+                            double.TryParse(values[0].Trim(), 
+                                System.Globalization.NumberStyles.Any,
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                out val1);
+                            double.TryParse(values[1].Trim(), 
+                                System.Globalization.NumberStyles.Any,
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                out val2);
+                            double.TryParse(values[2].Trim(), 
+                                System.Globalization.NumberStyles.Any,
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                out val3);
+                            
+                            collection.Add(new Odds1X2
+                            {
+                                Odds1 = FormatOdds(val1),
+                                OddsX = FormatOdds(val2),
+                                Odds2 = FormatOdds(val3),
+                                Amount = amount
+                            });
+                        }
+                    }
+                    catch { }
+                }
+            }
+            catch { }
         }
 
         private string FormatHandicap(double handicap)

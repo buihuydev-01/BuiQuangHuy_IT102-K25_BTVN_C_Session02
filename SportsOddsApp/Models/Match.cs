@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace SportsOddsApp.Models
@@ -17,6 +18,16 @@ namespace SportsOddsApp.Models
         private string _oddsX;
         private string _odds2;
         private int _status;
+
+        // Collections for multiple odds levels
+        public ObservableCollection<OddsLevel> HdpLevels { get; set; } = new();
+        public ObservableCollection<OddsLevel> OuLevels { get; set; } = new();
+        public ObservableCollection<Odds1X2> Odds1X2Levels { get; set; } = new();
+        
+        // H1 odds levels
+        public ObservableCollection<OddsLevel> HdpH1Levels { get; set; } = new();
+        public ObservableCollection<OddsLevel> OuH1Levels { get; set; } = new();
+        public ObservableCollection<Odds1X2> Odds1X2H1Levels { get; set; } = new();
 
         public int MatchId { get; set; }
         public int LeagueId { get; set; }
