@@ -168,10 +168,31 @@
 
         <!-- DataGrid -->
         <DataGrid Grid.Row="1" 
-                  ItemsSource="{Binding Matches}"
+                  ItemsSource="{Binding MatchRows}"
                   Background="White"
                   BorderBrush="#BDC3C7"
-                  BorderThickness="1">
+                  BorderThickness="1"
+                  AutoGenerateColumns="False">
+            
+            <!-- Row Style: Main row vs Sub-row -->
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <!-- Sub-row (Kèo khác) -->
+                        <DataTrigger Binding="{Binding IsMainRow}" Value="False">
+                            <Setter Property="Background" Value="#F8F9FA"/>
+                            <Setter Property="FontSize" Value="11"/>
+                            <Setter Property="Height" Value="30"/>
+                        </DataTrigger>
+                        <!-- Main row -->
+                        <DataTrigger Binding="{Binding IsMainRow}" Value="True">
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Height" Value="35"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            
             <DataGrid.Columns>
                 <!-- Thời Gian -->
                 <DataGridTextColumn Header="Thời Gian" 
@@ -194,19 +215,35 @@
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
 
-                <!-- Trận đấu (1 dòng: Team1 - Team2) -->
-                <DataGridTextColumn Header="Trận đấu" 
-                                    Binding="{Binding MatchDisplay}" 
-                                    Width="220">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="TextAlignment" Value="Left"/>
-                            <Setter Property="Padding" Value="5,0"/>
-                            <Setter Property="Foreground" Value="#2C3E50"/>
-                            <Setter Property="FontWeight" Value="Bold"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <!-- Trận đấu (1 dòng: Team1 - Team2, hoặc "└ Kèo khác" cho sub-rows) -->
+                <DataGridTemplateColumn Header="Trận đấu" Width="220">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Padding="5,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="#2C3E50"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                        <Style.Triggers>
+                                            <!-- Main row: Hiển thị tên trận -->
+                                            <DataTrigger Binding="{Binding IsMainRow}" Value="True">
+                                                <Setter Property="Text" Value="{Binding MatchDisplay}"/>
+                                            </DataTrigger>
+                                            <!-- Sub-row: Hiển thị "└ Kèo khác" -->
+                                            <DataTrigger Binding="{Binding IsMainRow}" Value="False">
+                                                <Setter Property="Text" Value="└ Kèo khác"/>
+                                                <Setter Property="Foreground" Value="#95A5A6"/>
+                                                <Setter Property="FontWeight" Value="Normal"/>
+                                                <Setter Property="FontStyle" Value="Italic"/>
+                                                <Setter Property="Margin" Value="15,0,0,0"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
                 <!-- Tỷ số -->
                 <DataGridTextColumn Header="Tỷ số" 
@@ -292,157 +329,70 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!-- Chấp H1 - Nhiều mức -->
-                <DataGridTemplateColumn Header="Chấp H1 (Tất cả mức)" Width="220">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="150">
-                                <ItemsControl ItemsSource="{Binding HdpH1Levels}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border BorderBrush="#E0E0E0" 
-                                                    BorderThickness="0,0,0,1" 
-                                                    Padding="5,3"
-                                                    Background="#FFF5F5">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="50"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    
-                                                    <!-- Line -->
-                                                    <TextBlock Grid.Column="0" 
-                                                               Text="{Binding Line}" 
-                                                               FontWeight="Bold"
-                                                               Foreground="#9B59B6"
-                                                               FontSize="11"
-                                                               VerticalAlignment="Center"/>
-                                                    
-                                                    <!-- Odds -->
-                                                    <StackPanel Grid.Column="1" 
-                                                                Orientation="Horizontal" 
-                                                                HorizontalAlignment="Right">
-                                                        <TextBlock Text="{Binding HomeOdds}" 
-                                                                   Foreground="#E74C3C"
-                                                                   FontWeight="SemiBold"
-                                                                   FontSize="11"
-                                                                   Margin="0,0,5,0"/>
-                                                        <TextBlock Text=" | " 
-                                                                   Foreground="#BDC3C7"
-                                                                   FontSize="11"/>
-                                                        <TextBlock Text="{Binding AwayOdds}" 
-                                                                   Foreground="#3498DB"
-                                                                   FontWeight="SemiBold"
-                                                                   FontSize="11"
-                                                                   Margin="5,0,0,0"/>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                <!-- Chấp H1 -->
+                <DataGridTextColumn Header="Chấp H1" 
+                                    Binding="{Binding HdpH1Line}" 
+                                    Width="60">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Center"/>
+                            <Setter Property="Foreground" Value="#9B59B6"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                <!-- Odds Chấp H1 -->
+                <DataGridTextColumn Header="Odds Chấp H1" 
+                                    Binding="{Binding HdpH1Display}" 
+                                    Width="110">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Center"/>
+                            <Setter Property="Foreground" Value="#E74C3C"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
 
-                <!-- T/X H1 - Nhiều mức -->
-                <DataGridTemplateColumn Header="T/X H1 (Tất cả mức)" Width="220">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="150">
-                                <ItemsControl ItemsSource="{Binding OuH1Levels}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border BorderBrush="#E0E0E0" 
-                                                    BorderThickness="0,0,0,1" 
-                                                    Padding="5,3"
-                                                    Background="#FFFEF8">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="50"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    
-                                                    <!-- Line -->
-                                                    <TextBlock Grid.Column="0" 
-                                                               Text="{Binding Line}" 
-                                                               FontWeight="Bold"
-                                                               Foreground="#F39C12"
-                                                               FontSize="11"
-                                                               VerticalAlignment="Center"/>
-                                                    
-                                                    <!-- Odds -->
-                                                    <StackPanel Grid.Column="1" 
-                                                                Orientation="Horizontal" 
-                                                                HorizontalAlignment="Right">
-                                                        <TextBlock Text="{Binding HomeOdds}" 
-                                                                   Foreground="#E67E22"
-                                                                   FontWeight="SemiBold"
-                                                                   FontSize="11"
-                                                                   Margin="0,0,5,0"/>
-                                                        <TextBlock Text=" | " 
-                                                                   Foreground="#BDC3C7"
-                                                                   FontSize="11"/>
-                                                        <TextBlock Text="{Binding AwayOdds}" 
-                                                                   Foreground="#16A085"
-                                                                   FontWeight="SemiBold"
-                                                                   FontSize="11"
-                                                                   Margin="5,0,0,0"/>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                <!-- T/X H1 -->
+                <DataGridTextColumn Header="T/X H1" 
+                                    Binding="{Binding OuH1Line}" 
+                                    Width="60">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Center"/>
+                            <Setter Property="Foreground" Value="#F39C12"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                <!-- Odds T/X H1 -->
+                <DataGridTextColumn Header="Odds T/X H1" 
+                                    Binding="{Binding OuH1Display}" 
+                                    Width="110">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Center"/>
+                            <Setter Property="Foreground" Value="#E67E22"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
 
-                <!-- 1X2 H1 - Nhiều mức -->
-                <DataGridTemplateColumn Header="1X2 H1 (Tất cả mức)" Width="200">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="150">
-                                <ItemsControl ItemsSource="{Binding Odds1X2H1Levels}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border BorderBrush="#E0E0E0" 
-                                                    BorderThickness="0,0,0,1" 
-                                                    Padding="5,3"
-                                                    Background="#F0F8FF">
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                    <TextBlock Text="{Binding Odds1}" 
-                                                               Foreground="#E74C3C"
-                                                               FontWeight="SemiBold"
-                                                               FontSize="11"
-                                                               Margin="0,0,5,0"/>
-                                                    <TextBlock Text=" | " 
-                                                               Foreground="#BDC3C7"
-                                                               FontSize="11"/>
-                                                    <TextBlock Text="{Binding OddsX}" 
-                                                               Foreground="#95A5A6"
-                                                               FontWeight="SemiBold"
-                                                               FontSize="11"
-                                                               Margin="5,0"/>
-                                                    <TextBlock Text=" | " 
-                                                               Foreground="#BDC3C7"
-                                                               FontSize="11"/>
-                                                    <TextBlock Text="{Binding Odds2}" 
-                                                               Foreground="#3498DB"
-                                                               FontWeight="SemiBold"
-                                                               FontSize="11"
-                                                               Margin="5,0,0,0"/>
-                                                </StackPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                <!-- 1X2 H1 -->
+                <DataGridTextColumn Header="1X2 H1" 
+                                    Binding="{Binding X12H1Display}" 
+                                    Width="140">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Center"/>
+                            <Setter Property="Foreground" Value="#2C3E50"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
 
                 <!-- Trạng thái -->
                 <DataGridTextColumn Header="Trạng thái" 

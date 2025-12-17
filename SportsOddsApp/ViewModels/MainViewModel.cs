@@ -20,6 +20,7 @@ namespace SportsOddsApp.ViewModels
         private string _cookieString;
 
         public ObservableCollection<Match> Matches { get; set; }
+        public ObservableCollection<MatchRow> MatchRows { get; set; }
 
         public string CookieString
         {
@@ -72,6 +73,7 @@ namespace SportsOddsApp.ViewModels
             _cookieString = LoadSavedCookie();
             _apiService = new OddsApiService(_cookieString);
             Matches = new ObservableCollection<Match>();
+            MatchRows = new ObservableCollection<MatchRow>();
             
             RefreshCommand = new RelayCommand(async () => await LoadMatchesAsync());
             StartAutoRefreshCommand = new RelayCommand(StartAutoRefresh);
@@ -146,6 +148,9 @@ namespace SportsOddsApp.ViewModels
                     {
                         Matches.Add(match);
                     }
+                    
+                    // Convert to MatchRows (mỗi mức kèo = 1 row)
+                    RebuildMatchRows();
                 });
 
                 _lastUpdate = DateTime.Now;
@@ -162,6 +167,129 @@ namespace SportsOddsApp.ViewModels
             }
         }
 
+        private void RebuildMatchRows()
+        {
+            MatchRows.Clear();
+            
+            foreach (var match in Matches)
+            {
+                // Determine how many odds levels exist
+                int maxLevels = Math.Max(
+                    Math.Max(match.HdpH1Levels.Count, match.OuH1Levels.Count),
+                    Math.Max(match.Odds1X2H1Levels.Count, 
+                        Math.Max(match.HdpLevels.Count, 
+                            Math.Max(match.OuLevels.Count, match.Odds1X2Levels.Count)))
+                );
+                
+                // If no levels, create at least 1 row with legacy data
+                if (maxLevels == 0)
+                {
+                    MatchRows.Add(CreateMainRow(match));
+                    continue;
+                }
+                
+                // Create main row + sub-rows for each level
+                for (int i = 0; i < maxLevels; i++)
+                {
+                    var row = new MatchRow
+                    {
+                        MatchId = match.MatchId,
+                        IsMainRow = (i == 0),
+                        Time = (i == 0) ? match.Time : "",
+                        LeagueName = (i == 0) ? match.LeagueName : "",
+                        MatchDisplay = (i == 0) ? match.MatchDisplay : "",
+                        Score = (i == 0) ? match.ScoreDisplay : "",
+                        Status = (i == 0) ? match.StatusText : ""
+                    };
+                    
+                    // Fill odds from collections
+                    if (i < match.HdpLevels.Count)
+                    {
+                        row.HdpLine = match.HdpLevels[i].Line;
+                        row.HdpHome = match.HdpLevels[i].HomeOdds;
+                        row.HdpAway = match.HdpLevels[i].AwayOdds;
+                        row.Amount = match.HdpLevels[i].Amount;
+                    }
+                    
+                    if (i < match.OuLevels.Count)
+                    {
+                        row.OuLine = match.OuLevels[i].Line;
+                        row.OuHome = match.OuLevels[i].HomeOdds;
+                        row.OuAway = match.OuLevels[i].AwayOdds;
+                    }
+                    
+                    if (i < match.Odds1X2Levels.Count)
+                    {
+                        row.Odds1 = match.Odds1X2Levels[i].Odds1;
+                        row.OddsX = match.Odds1X2Levels[i].OddsX;
+                        row.Odds2 = match.Odds1X2Levels[i].Odds2;
+                    }
+                    
+                    // H1 Odds
+                    if (i < match.HdpH1Levels.Count)
+                    {
+                        row.HdpH1Line = match.HdpH1Levels[i].Line;
+                        row.HdpH1Home = match.HdpH1Levels[i].HomeOdds;
+                        row.HdpH1Away = match.HdpH1Levels[i].AwayOdds;
+                    }
+                    
+                    if (i < match.OuH1Levels.Count)
+                    {
+                        row.OuH1Line = match.OuH1Levels[i].Line;
+                        row.OuH1Home = match.OuH1Levels[i].HomeOdds;
+                        row.OuH1Away = match.OuH1Levels[i].AwayOdds;
+                    }
+                    
+                    if (i < match.Odds1X2H1Levels.Count)
+                    {
+                        row.Odds1H1 = match.Odds1X2H1Levels[i].Odds1;
+                        row.OddsXH1 = match.Odds1X2H1Levels[i].OddsX;
+                        row.Odds2H1 = match.Odds1X2H1Levels[i].Odds2;
+                    }
+                    
+                    MatchRows.Add(row);
+                }
+            }
+        }
+        
+        private MatchRow CreateMainRow(Models.Match match)
+        {
+            return new MatchRow
+            {
+                MatchId = match.MatchId,
+                IsMainRow = true,
+                Time = match.Time,
+                LeagueName = match.LeagueName,
+                MatchDisplay = match.MatchDisplay,
+                Score = match.ScoreDisplay,
+                Status = match.StatusText,
+                
+                HdpLine = match.HdpH1Line,
+                HdpHome = match.HdpHome,
+                HdpAway = match.HdpAway,
+                
+                OuLine = match.OuHome,
+                OuHome = match.OuHome,
+                OuAway = match.OuAway,
+                
+                Odds1 = match.Odds1,
+                OddsX = match.OddsX,
+                Odds2 = match.Odds2,
+                
+                HdpH1Line = match.HdpH1Line,
+                HdpH1Home = match.HdpH1Home,
+                HdpH1Away = match.HdpH1Away,
+                
+                OuH1Line = match.OuH1Line,
+                OuH1Home = match.OuH1Home,
+                OuH1Away = match.OuH1Away,
+                
+                Odds1H1 = match.Odds1H1,
+                OddsXH1 = match.OddsXH1,
+                Odds2H1 = match.Odds2H1
+            };
+        }
+        
         private void UpdateMatch(Models.Match existing, Models.Match updated)
         {
             existing.Time = updated.Time;
