@@ -1,0 +1,129 @@
+╔══════════════════════════════════════════════════════════════╗
+║   HƯỚNG DẪN DOWNLOAD PROJECT VỀ MÁY                          ║
+╚══════════════════════════════════════════════════════════════╝
+
+📍 FILE LOCATION (hiện tại):
+   /workspace/SportsOddsApp.zip  (33KB)
+   /workspace/SportsOddsApp/     (toàn bộ source code)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 CÁCH 1: DOWNLOAD QUA CURSOR/VS CODE (Đề xuất)
+
+Bước 1: Mở File Explorer
+   → Nhấn Ctrl+Shift+E
+
+Bước 2: Tìm file
+   → Tìm "SportsOddsApp.zip" trong danh sách files
+
+Bước 3: Download
+   → Right-click vào file ZIP
+   → Chọn "Download..."
+   → Lưu vào: C:\Projects\ (hoặc nơi bạn muốn)
+
+Bước 4: Giải nén
+   → Right-click → "Extract All..."
+   → Chọn thư mục đích
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 CÁCH 2: NẾU KHÔNG THẤY NÚT DOWNLOAD
+
+Option A: Sử dụng Terminal trong Cursor
+   1. Mở Terminal (Ctrl+`)
+   2. Gõ: code /workspace/SportsOddsApp.zip
+   3. File sẽ mở, có option download
+
+Option B: Sync với Git
+   1. git init
+   2. git add .
+   3. git commit -m "Initial commit"
+   4. Push lên GitHub
+   5. Clone về máy
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📂 CÁCH 3: TẠO PROJECT THỦ CÔNG
+
+Nếu không download được, làm theo:
+
+1. Tạo folder: C:\Projects\SportsOddsApp\
+
+2. Tạo structure:
+   C:\Projects\SportsOddsApp\
+   ├── Models\
+   ├── Services\
+   └── ViewModels\
+
+3. Copy 18 files từ workspace:
+   - Mở từng file trong Cursor
+   - Copy nội dung (Ctrl+A, Ctrl+C)
+   - Tạo file mới trên máy
+   - Paste (Ctrl+V)
+
+4. Danh sách files cần copy:
+   ✓ SportsOddsApp.csproj
+   ✓ SportsOddsApp.sln
+   ✓ App.xaml
+   ✓ App.xaml.cs
+   ✓ MainWindow.xaml
+   ✓ MainWindow.xaml.cs
+   ✓ Models/Match.cs
+   ✓ Services/OddsApiService.cs
+   ✓ Services/JavaScriptDataParser.cs
+   ✓ ViewModels/MainViewModel.cs
+   (+ 8 files documentation nếu muốn)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ SAU KHI DOWNLOAD XONG:
+
+1. Giải nén file ZIP (nếu dùng cách 1)
+   
+2. Mở Visual Studio 2022
+   
+3. File → Open → Project/Solution
+   
+4. Chọn: C:\Projects\SportsOddsApp\SportsOddsApp.sln
+   
+5. Restore NuGet Packages:
+   → Right-click Solution → Restore NuGet Packages
+   
+6. Build:
+   → Build → Rebuild Solution (Ctrl+Shift+B)
+   
+7. Run:
+   → Debug → Start Debugging (F5)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🐛 TROUBLESHOOTING:
+
+❌ "Cannot find file"
+   → Check xem bạn có quyền truy cập workspace không
+   → Thử refresh File Explorer (F5)
+
+❌ "Download button not showing"
+   → Thử right-click → "Copy Path"
+   → Paste path vào File Explorer Windows
+   → Navigate và copy file thủ công
+
+❌ "File corrupted after download"
+   → Check file size (phải ~33KB)
+   → Download lại
+   → Thử extract bằng tool khác (7-Zip, WinRAR)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📧 NẾU VẪN KHÔNG DOWNLOAD ĐƯỢC:
+
+Báo cho tôi biết:
+1. Bạn đang dùng app nào? (Cursor/VS Code/Browser)
+2. Có thấy files trong File Explorer không?
+3. Right-click có option "Download" không?
+
+Tôi sẽ tìm cách khác giúp bạn!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✨ GOOD LUCK!
